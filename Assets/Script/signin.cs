@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using LitJson;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.UI;
 
 public class signin : MonoBehaviour
 {
+    [SerializeField] public InputField input_id;
+    [SerializeField] public InputField input_password;
     private string resultJson; // Json 데이터
 
     public bool IsSuccesSendData = false;
@@ -63,8 +66,8 @@ public class signin : MonoBehaviour
         // HTTP Get 요청 보내기
         Debug.Log("Get data url" + postDataURL);
 
-        string username = "test123"; // GetComponent<Input>().label
-        string password = "1234";
+        string username = input_id.text;
+        string password = input_password.text;
 
         SigninMember signinMember = new SigninMember(username, password);
         string json = JsonMapper.ToJson(signinMember);
@@ -94,12 +97,21 @@ public class signin : MonoBehaviour
                     // json으로 받기
                     Debug.LogError("통신 실패");
                 }
+                else
+                {
+
                 resultJson = System.Text.Encoding.UTF8.GetString(request.downloadHandler.data);
 
                 Member member = Member.JsonToObject(resultJson);
+
+                 Debug.Log(resultJson);
+                    Debug.Log(username);
+                    Debug.Log(password);
+
                 database.Instance.setLoginMember(member);
 
                 Debug.Log("로그인 완료!");
+                }
             }
         }
     }
